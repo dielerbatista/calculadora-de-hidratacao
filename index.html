@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<!-- saved from url=(0132)file:///G:/Meu%20Drive/Nutri%C3%A7%C3%A3o%20-%20UCS/Primeiro%20Semestre/Sa%C3%BAde%20Coletiva/TDE2/calculadora-hidratacao-slide.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Hidratação</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link href="./index_files/css2" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #F0EFEB;
+      --paper:  #F9F8F5;
+      --olive:  #3D4A2E;
+      --olive2: #5A6B40;
+      --olive3: #8A9C6A;
+      --muted:  #9A9688;
+      --border: #D5D2C8;
+      --blue:   #91BDD0;
+      --radius: 4px;
+    }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--olive);
+      overflow-x: hidden;
+    }
+
+    /* Textura sutil de papel */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 2.2rem 2.5rem 0;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .hero-tagline {
+      font-style: italic;
+      font-weight: 300;
+      font-size: 12.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.1rem;
+    }
+
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: clamp(3.8rem, 11vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: var(--olive);
+      position: relative; z-index: 2;
+    }
+
+    /* Área da ilustração + título lado a lado */
+    .hero-body {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .hero-text { flex: 1; }
+
+    .hero-illus {
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: -2px;
+    }
+
+    .hero-rule {
+      border: none;
+      border-top: 1.5px solid var(--border);
+      margin-top: 0;
+    }
+
+    /* ── PAGE ── */
+    .page {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 0 2.5rem 3.5rem;
+      position: relative; z-index: 1;
+    }
+
+    .page-subtitle {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 1.4rem 0 1.6rem;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      padding: 1.6rem;
+      margin-bottom: 1px;
+    }
+
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--olive3);
+      margin-bottom: 1.3rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── ROWS ── */
+    .irow {
+      display: flex; align-items: center;
+      gap: 16px; margin-bottom: 1.1rem;
+    }
+    .irow:last-child { margin-bottom: 0; }
+
+    .irow > label {
+      font-size: 14px; color: var(--olive);
+      flex: 1; line-height: 1.4; font-weight: 500;
+    }
+
+    .hint {
+      font-size: 12px; color: var(--muted);
+      display: block; margin-top: 2px;
+      font-style: italic; font-weight: 400;
+    }
+
+    .rw { display: flex; align-items: center; gap: 10px; flex: 1.1; }
+
+    input[type=range] {
+      -webkit-appearance: none; flex: 1;
+      height: 2px; background: var(--border);
+      border-radius: 1px; outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      background: var(--olive); border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid var(--paper);
+      box-shadow: 0 0 0 1.5px var(--olive);
+      transition: transform 0.15s;
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+    .rv {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px; font-weight: 700;
+      letter-spacing: 0.04em;
+      min-width: 58px; text-align: right;
+      color: var(--olive);
+    }
+
+    .tg { display: flex; gap: 6px; flex-wrap: wrap; flex: 1.1; }
+
+    .tb {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 6px 16px; border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      background: transparent; color: var(--muted);
+      cursor: pointer; transition: all 0.14s;
+    }
+    .tb:hover { border-color: var(--olive2); color: var(--olive); }
+    .tb.on { background: var(--olive); border-color: var(--olive); color: var(--paper); }
+
+    .chk-g { display: flex; flex-direction: column; gap: 8px; }
+    .chk-i {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--olive); cursor: pointer;
+      line-height: 1.5; font-weight: 400;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      transition: all 0.14s;
+    }
+    .chk-i:hover { border-color: var(--olive2); }
+    .chk-i:has(input:checked) { border-color: var(--olive); background: var(--paper); }
+    .chk-i input[type=checkbox] {
+      width: 16px; height: 16px; cursor: pointer;
+      margin-top: 2px; flex-shrink: 0;
+      accent-color: var(--olive);
+    }
+
+    .tsec {
+      margin-top: 1.1rem; padding-top: 1.1rem;
+      border-top: 1px solid var(--border); display: none;
+    }
+
+    /* ── RESULTADOS ── */
+    .results-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-top: none;
+    }
+
+    .rc { background: var(--paper); padding: 1.6rem; }
+
+    .rday {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.7rem;
+    }
+
+    .rrange {
+      display: flex; align-items: baseline;
+      gap: 6px; flex-wrap: wrap; margin-bottom: 0.2rem;
+    }
+
+    .rn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 3.5rem; font-weight: 900;
+      line-height: 1; letter-spacing: -0.02em;
+      color: var(--olive);
+    }
+
+    .rsep {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem; font-weight: 300; color: var(--muted);
+    }
+
+    .ru {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem; font-weight: 300; color: var(--olive2);
+      align-self: flex-end; padding-bottom: 6px; letter-spacing: 0.06em;
+    }
+
+    .rcups { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 1rem; }
+
+    .rdiv { border: none; border-top: 1px solid var(--border); margin: 0.9rem 0; }
+
+    .bi {
+      display: flex; justify-content: space-between;
+      font-size: 11px; padding: 3px 0; gap: 8px; color: var(--olive2);
+    }
+    .bi .bl { flex: 1; opacity: 0.75; }
+    .bi .bv { font-weight: 600; white-space: nowrap; }
+
+    .ph { font-size: 12px; font-style: italic; color: var(--muted); padding: 1rem 0; }
+
+    /* acento azul no treino */
+    .rc.tre .rn { color: #4A849C; }
+
+    /* ── AVISO ── */
+    .warn {
+      background: #FFF9EA; border: 1.5px solid #D4AA50;
+      padding: 1rem 1.4rem; margin-top: 1px;
+      font-size: 13px; font-style: italic; color: #7A5C00;
+      display: none; line-height: 1.6;
+    }
+
+    /* ── FONTES ── */
+    .sources {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 0 0; margin-top: 2.5rem;
+    }
+    .src-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.75rem;
+    }
+    .sources p {
+      font-size: 11.5px; color: var(--muted);
+      margin-bottom: 0.4rem; line-height: 1.6;
+    }
+    .sources p:last-child { margin: 0; }
+
+    footer {
+      text-align: center; font-size: 12px;
+      color: var(--muted); margin-top: 1.5rem; line-height: 1.6;
+    }
+
+    @keyframes bump {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .bump { animation: bump 0.22s ease; }
+
+    @media (max-width: 580px) {
+      .hero { padding: 1.5rem 1.2rem 0; }
+      .page { padding: 0 1.2rem 3rem; }
+      .hero-body { flex-direction: column-reverse; align-items: center; }
+      .hero-illus { margin-bottom: 0.5rem; }
+      .results-grid { grid-template-columns: 1fr; }
+      .irow { flex-direction: column; align-items: flex-start; }
+      .rw, .tg { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-meta">
+    <span>UCS — Universidade de Caxias do Sul</span>
+    <span>Saúde Coletiva</span>
+  </div>
+
+  <div class="hero-body">
+    <div class="hero-text">
+      
+      <h1 class="hero-title">HIDRATAÇÃO</h1>
+    </div>
+
+    <!-- ILUSTRAÇÃO: dois personagens flat bebendo água, fiel ao slide -->
+    
+  </div>
+
+  <hr class="hero-rule">
+</div>
+
+<!-- ══ CONTEÚDO ══ -->
+<div class="page">
+
+  <p class="page-subtitle">Calculadora de hidratação diária</p>
+
+  <!-- Card dados pessoais -->
+  <div class="card">
+    <p class="section-label">dados pessoais</p>
+    <div class="irow">
+      <label>Peso <span class="hint">em quilogramas</span></label>
+      <div class="rw">
+        <input type="range" id="peso" min="30" max="150" value="65" step="1" oninput="calc()">
+        <span class="rv" id="peso-v">65 kg</span>
+      </div>
+    </div>
+    <div class="irow">
+      <label>Sexo biológico <span class="hint">ajusta a faixa de referência</span></label>
+      <div class="tg" id="sexo-g">
+        <button class="tb on" onclick="tog(&#39;sexo&#39;,&#39;F&#39;,this)">Feminino</button>
+        <button class="tb" onclick="tog(&#39;sexo&#39;,&#39;M&#39;,this)">Masculino</button>
+      </div>
+    </div>
+    <div class="irow" style="margin-bottom:0">
+      <label>Rotina diária <span class="hint">fora do exercício físico</span></label>
+      <div class="tg" id="rotina-g">
+        <button class="tb on" onclick="tog(&#39;rotina&#39;,&#39;sentado&#39;,this)">Sentado</button>
+        <button class="tb" onclick="tog(&#39;rotina&#39;,&#39;misto&#39;,this)">Misto</button>
+        <button class="tb" onclick="tog(&#39;rotina&#39;,&#39;ativo&#39;,this)">Ativo/em pé</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card atividade física -->
+  <div class="card">
+    <p class="section-label">atividade física</p>
+    <div class="irow" style="flex-direction:column;align-items:flex-start">
+      <label style="margin-bottom:0.5rem">Você pratica exercícios físicos?</label>
+      <div class="tg" id="exercicio-g" style="width:100%">
+        <button class="tb on" onclick="tog(&#39;exercicio&#39;,&#39;nao&#39;,this)">Não pratico</button>
+        <button class="tb" onclick="tog(&#39;exercicio&#39;,&#39;sim&#39;,this)">Pratico</button>
+      </div>
+    </div>
+    <div class="tsec" id="tsec" style="display: none;">
+      <div class="irow">
+        <label>Dias de treino por semana</label>
+        <div class="rw">
+          <input type="range" id="dias" min="1" max="7" value="3" step="1" oninput="calc()">
+          <span class="rv" id="dias-v">5 dias</span>
+        </div>
+      </div>
+      <div class="irow">
+        <label>Duração média do treino</label>
+        <div class="tg" id="dur-g">
+          <button class="tb" onclick="tog(&#39;dur&#39;,30,this)">30 min</button>
+          <button class="tb" onclick="tog(&#39;dur&#39;,60,this)">1 hora</button>
+          <button class="tb on" onclick="tog(&#39;dur&#39;,90,this)">1h30</button>
+          <button class="tb" onclick="tog(&#39;dur&#39;,120,this)">2 horas</button>
+        </div>
+      </div>
+      <div class="irow" style="margin-bottom:0">
+        <label>Intensidade do treino <span class="hint" id="int-hint">corrida leve, musculação, ciclismo</span></label>
+        <div class="tg" id="int-g">
+          <button class="tb" onclick="tog(&#39;int&#39;,&#39;leve&#39;,this)">Leve</button>
+          <button class="tb on" onclick="tog(&#39;int&#39;,&#39;mod&#39;,this)">Moderado</button>
+          <button class="tb" onclick="tog(&#39;int&#39;,&#39;int&#39;,this)">Intenso</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card fatores adicionais -->
+  <div class="card">
+    <p class="section-label">fatores adicionais</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Esses fatores se aplicam a ambos os dias.</p>
+    <div class="chk-g">
+      <label class="chk-i"><input type="checkbox" id="calor" onchange="calc()"> Exposição prolongada ao calor (sol, obras, ambientes quentes)</label>
+      <label class="chk-i"><input type="checkbox" id="febre" onchange="calc()"> Febre ou perda de líquidos (diarreia, vômito)</label>
+      <label class="chk-i"><input type="checkbox" id="gest" onchange="calc()"> Gestante</label>
+      <label class="chk-i"><input type="checkbox" id="lact" onchange="calc()"> Amamentando</label>
+      <label class="chk-i"><input type="checkbox" id="alc" onchange="calc()"> Consumiu álcool hoje</label>
+    </div>
+  </div>
+
+  <!-- Resultados -->
+  <div class="results-grid">
+    <div class="rc des">
+      <p class="rday">🌙 Dia de descanso</p>
+      <div class="rrange">
+        <span class="rn bump" id="d-min">2,0</span>
+        <span class="rsep">a</span>
+        <span class="rn bump" id="d-max">2,1</span>
+        <span class="ru">litros</span>
+      </div>
+      <p class="rcups" id="d-cups">10–11 copos de 200 ml</p>
+      <hr class="rdiv">
+      <div id="d-bd"><div class="bi"><span class="bl">Base (31–33 ml/kg × 65kg)</span><span class="bv">+2,0–2,1 L</span></div></div>
+    </div>
+    <div class="rc tre">
+      <p class="rday">🏃 Dia de treino</p>
+      <p class="ph" id="tre-ph" style="display: block;">Ative "Pratico exercícios" acima</p>
+      <div id="tre-data" style="display: none;">
+        <div class="rrange">
+          <span class="rn bump" id="t-min">1,8</span>
+          <span class="rsep">a</span>
+          <span class="rn bump" id="t-max">2,0</span>
+          <span class="ru">litros</span>
+        </div>
+        <p class="rcups" id="t-cups">9–10 copos · 5x/sem (2 dias descanso)</p>
+        <hr class="rdiv">
+        <div id="t-bd"><div class="bi"><span class="bl">Base (31–33 ml/kg × 30kg)</span><span class="bv">+0,9–1,0 L</span></div><div class="bi"><span class="bl">Exercício 90min mod (ACSM)</span><span class="bv">+0,8–1,1 L</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn" id="warn" style="display: none;"></div>
+
+  <!-- Fontes -->
+  <div class="sources">
+    <p class="src-title">Fontes científicas</p>
+    <p><strong>Base hídrica (ml/kg):</strong> aproximação prática derivada das Adequate Intakes da EFSA (2,0 L/dia mulheres; 2,5 L/dia homens) e IOM — Institute of Medicine. <em>Dietary Reference Intakes for Water, Potassium, Sodium, Chloride, and Sulfate.</em> Washington, DC: NAP, 2004.</p>
+    <p><strong>Gestação (+300 ml) e lactação (+700 ml):</strong> EFSA Panel on Dietetic Products, Nutrition, and Allergies. <em>Scientific Opinion on Dietary Reference Values for Water.</em> EFSA Journal 2010;8(3):1459.</p>
+    <p><strong>Acréscimo por exercício (0,4–0,8 L/hora):</strong> American College of Sports Medicine (ACSM). <em>Exercise and Fluid Replacement — Position Stand.</em> Medicine &amp; Science in Sports &amp; Exercise, 2007.</p>
+    <p><strong>Nota:</strong> A OMS não publica recomendações específicas de hidratação por dias de treino. As referências de atividade física da OMS (150–300 min/semana) foram usadas apenas para contextualizar níveis de atividade.</p>
+  </div>
+
+  <footer>
+    Esta calculadora é uma ferramenta educativa.<br>
+    Consulte um nutricionista para orientação individualizada.
+  </footer>
+
+</div>
+
+<script>
+  const S = { sexo:'F', exercicio:'nao', rotina:'sentado', dur:30, int:'leve' };
+
+  const intHints = {
+    leve:'caminhada, yoga, alongamento',
+    mod: 'corrida leve, musculação, ciclismo',
+    int: 'treino de alta intensidade, esportes competitivos'
+  };
+  const intRate = {
+    leve:{ min:0.4, max:0.55 },
+    mod: { min:0.55, max:0.7 },
+    int: { min:0.7, max:0.8 }
+  };
+  const rotinaEx = {
+    sentado:{ min:0,   max:0   },
+    misto:  { min:100, max:200 },
+    ativo:  { min:200, max:300 }
+  };
+
+  function tog(key, val, btn) {
+    S[key] = val;
+    document.querySelectorAll('#'+key+'-g .tb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    if (key === 'exercicio') {
+      document.getElementById('tsec').style.display     = val==='sim' ? 'block' : 'none';
+      document.getElementById('tre-ph').style.display   = val==='sim' ? 'none'  : 'block';
+      document.getElementById('tre-data').style.display = val==='sim' ? 'block' : 'none';
+    }
+    if (key === 'int') document.getElementById('int-hint').textContent = intHints[val];
+    calc();
+  }
+
+  function fmt(ml) { return (ml/1000).toFixed(1).replace('.',','); }
+
+  function bump(id) {
+    const el = document.getElementById(id);
+    el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+  }
+
+  function buildBd(items, id) {
+    document.getElementById(id).innerHTML = items.map(i => {
+      const v = i.min===i.max ? fmt(i.min)+' L' : fmt(i.min)+'–'+fmt(i.max)+' L';
+      return `<div class="bi"><span class="bl">${i.label}</span><span class="bv">+${v}</span></div>`;
+    }).join('');
+  }
+
+  function calc() {
+    const peso = parseInt(document.getElementById('peso').value);
+    document.getElementById('peso-v').textContent = peso + ' kg';
+    const dias = parseInt(document.getElementById('dias').value);
+    document.getElementById('dias-v').textContent = dias + (dias===1?' dia':' dias');
+
+    const mlMin = S.sexo==='F' ? 31 : 33;
+    const mlMax = S.sexo==='F' ? 33 : 35;
+    const bMin = peso*mlMin, bMax = peso*mlMax;
+
+    const dBd = [{ label:'Base ('+mlMin+'–'+mlMax+' ml/kg × '+peso+'kg)', min:bMin, max:bMax }];
+    const tBd = [{ label:'Base ('+mlMin+'–'+mlMax+' ml/kg × '+peso+'kg)', min:bMin, max:bMax }];
+
+    const rot = rotinaEx[S.rotina];
+    if (rot.max > 0) {
+      dBd.push({ label:'Rotina ativa', min:rot.min, max:rot.max });
+      tBd.push({ label:'Rotina ativa', min:rot.min, max:rot.max });
+    }
+
+    const fatores = [];
+    if (document.getElementById('calor').checked) fatores.push({ label:'Exposição ao calor',        min:300, max:500 });
+    if (document.getElementById('febre').checked) fatores.push({ label:'Febre / perda de líquidos', min:400, max:600 });
+    if (document.getElementById('gest').checked)  fatores.push({ label:'Gestação (EFSA 2010)',       min:300, max:300 });
+    if (document.getElementById('lact').checked)  fatores.push({ label:'Amamentação (EFSA 2010)',    min:700, max:700 });
+    if (document.getElementById('alc').checked)   fatores.push({ label:'Compensação álcool',         min:200, max:300 });
+
+    let fMin=0, fMax=0;
+    fatores.forEach(f => { fMin+=f.min; fMax+=f.max; dBd.push(f); tBd.push(f); });
+
+    const dMin = bMin+rot.min+fMin, dMax = bMax+rot.max+fMax;
+    document.getElementById('d-min').textContent = fmt(dMin);
+    document.getElementById('d-max').textContent = fmt(dMax);
+    document.getElementById('d-cups').textContent =
+      Math.round(dMin/200)+'–'+Math.round(dMax/200)+' copos de 200 ml';
+    buildBd(dBd,'d-bd');
+    bump('d-min'); bump('d-max');
+
+    if (S.exercicio === 'sim') {
+      const horas = S.dur/60, rate = intRate[S.int];
+      const exMin = Math.round(rate.min*horas*1000), exMax = Math.round(rate.max*horas*1000);
+      tBd.push({ label:'Exercício '+S.dur+'min '+S.int+' (ACSM)', min:exMin, max:exMax });
+      const tMin = bMin+rot.min+fMin+exMin, tMax = bMax+rot.max+fMax+exMax;
+      document.getElementById('t-min').textContent = fmt(tMin);
+      document.getElementById('t-max').textContent = fmt(tMax);
+      document.getElementById('t-cups').textContent =
+        Math.round(tMin/200)+'–'+Math.round(tMax/200)+' copos · '+dias+'x/sem ('+(7-dias)+' dias descanso)';
+      buildBd(tBd,'t-bd');
+      bump('t-min'); bump('t-max');
+    }
+
+    const warns = [];
+    if (document.getElementById('gest').checked && document.getElementById('lact').checked)
+      warns.push('Gestação e amamentação marcadas ao mesmo tempo — verifique qual se aplica.');
+    const mx = S.exercicio==='sim'
+      ? (bMax+rot.max+fMax+Math.round(intRate[S.int].max*(S.dur/60)*1000))
+      : (bMax+rot.max+fMax);
+    if (mx > 4500) warns.push('Valor máximo elevado. Para demandas acima de 4,5 L/dia, recomendamos avaliação com nutricionista.');
+    const w = document.getElementById('warn');
+    w.style.display = warns.length ? 'block' : 'none';
+    w.innerHTML = warns.length ? '⚠️ '+warns.join(' ') : '';
+  }
+
+  calc();
+</script>
+
+
+</body></html>
